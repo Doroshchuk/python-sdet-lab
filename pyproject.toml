@@ -1,0 +1,28 @@
+[project]
+name = "python-sdet-lab"
+version = "0.1.0"
+description = "A hands-on learning repository for Python-based SDET development"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "I",
+    "B",
+    "UP"
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
