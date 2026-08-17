@@ -1,7 +1,7 @@
 from playwright.sync_api import Page
 
 from framework.config.settings import BASE_URL
-from python.basics.functions import functions
+from framework.utils.common import build_url
 
 
 class BasePage:
@@ -9,4 +9,4 @@ class BasePage:
         self.page = page
 
     def open(self, path: str = "") -> None:
-        self.page.goto(functions.build_url(BASE_URL, path))
+        self.page.goto(build_url(BASE_URL, path))

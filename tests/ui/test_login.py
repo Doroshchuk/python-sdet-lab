@@ -1,7 +1,7 @@
 from playwright.sync_api import Page, expect
 
 from framework.pages.home_page import HomePage
-from python.basics.functions.functions import (
+from framework.utils.common import (
     generate_random_email,
     generate_random_string,
 )
