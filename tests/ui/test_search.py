@@ -6,6 +6,7 @@ from framework.pages.products_page import ProductsPage
 from framework.utils.common import build_url
 
 
+# Test Case 9
 def test_search_products(page: Page) -> None:
     home_page = HomePage(page)
     home_page.open()
