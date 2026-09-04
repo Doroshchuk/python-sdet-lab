@@ -18,9 +18,11 @@ def test_search_products(page: Page) -> None:
 
     search_term = "dress"
     products_page.search_product(search_term)
+    expect(products_page.product_listing.title).to_be_visible()
     expect(products_page.product_listing.title).to_have_text("Searched Products")
     expect(products_page.product_listing.product_cards).not_to_have_count(0)
-    expect(products_page.product_listing.product_cards.first).to_be_visible()
+    for product_card in products_page.product_listing.product_cards.all():
+        expect(product_card).to_be_visible()
 
     # TODO: Validate search result relevance once the expected search behavior is defined.
     # Searching for "dress" currently returns products whose titles do not contain

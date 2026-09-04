@@ -24,6 +24,9 @@ def test_add_two_products_to_cart(page: Page) -> None:
     first_cart_item = cart_page.cart_item_at(0)
     second_cart_item = cart_page.cart_item_at(1)
 
+    expect(first_cart_item.container).to_be_visible()
+    expect(second_cart_item.container).to_be_visible()
+
     expect.soft(first_cart_item.title).to_have_text(first_product_info.title)
     expect.soft(first_cart_item.price).to_have_text(first_product_info.price)
     expect.soft(first_cart_item.quantity).to_have_text("1")
@@ -46,6 +49,7 @@ def test_view_product_quantity_in_the_cart(page: Page) -> None:
     expect(product_details_page.page).to_have_url(
         re.compile(rf"{re.escape(build_url(BASE_URL, product_details_page.PATH))}/\d+$")
     )
+    expect(product_details_page.title).to_be_visible()
     expect(product_details_page.title).to_have_text(first_product_info.title)
 
     expected_quantity = 4
@@ -54,5 +58,6 @@ def test_view_product_quantity_in_the_cart(page: Page) -> None:
 
     expect(cart_page.cart_items).to_have_count(1)
     cart_item = cart_page.cart_item_at(0)
+    expect(cart_item.container).to_be_visible()
     expect(cart_item.title).to_have_text(first_product_info.title)
     expect(cart_item.quantity).to_have_text(str(expected_quantity))
