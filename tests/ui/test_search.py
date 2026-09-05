@@ -1,4 +1,4 @@
-from playwright.sync_api import Page, expect
+from playwright.sync_api import expect
 
 from framework.config.settings import BASE_URL
 from framework.pages.home_page import HomePage
@@ -7,9 +7,7 @@ from framework.utils.common import build_url
 
 
 # Test Case 9
-def test_search_products(page: Page) -> None:
-    home_page = HomePage(page)
-    home_page.open()
+def test_search_products(home_page: HomePage) -> None:
     products_page = home_page.go_to_products_page()
 
     expect(products_page.page).to_have_url(build_url(BASE_URL, ProductsPage.PATH))

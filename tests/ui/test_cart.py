@@ -1,6 +1,6 @@
 import re
 
-from playwright.sync_api import Page, expect
+from playwright.sync_api import expect
 
 from framework.config.settings import BASE_URL
 from framework.pages.home_page import HomePage
@@ -8,9 +8,7 @@ from framework.utils.common import build_url
 
 
 # Test Case 12
-def test_add_two_products_to_cart(page: Page) -> None:
-    home_page = HomePage(page)
-    home_page.open()
+def test_add_two_products_to_cart(home_page: HomePage) -> None:
     products_page = home_page.go_to_products_page()
     first_product = products_page.product_listing.product_at(0)
     first_product_info = first_product.product_info()
@@ -39,9 +37,7 @@ def test_add_two_products_to_cart(page: Page) -> None:
 
 
 # Test Case 13
-def test_view_product_quantity_in_the_cart(page: Page) -> None:
-    home_page = HomePage(page)
-    home_page.open()
+def test_view_product_quantity_in_the_cart(home_page: HomePage) -> None:
     first_product = home_page.product_listing.product_at(0)
     first_product_info = first_product.product_info()
     product_details_page = first_product.view_product()
