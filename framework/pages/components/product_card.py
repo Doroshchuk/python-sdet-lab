@@ -21,6 +21,7 @@ class ProductCard:
         self.title = self.product_info_container.locator("p")
         self.price = self.product_info_container.get_by_role("heading")
         self.view_product_link = self.card.locator(".choose a")
+        self.image = self.product_info_container.get_by_role("img")
 
         # overlay
         self.overlay = self.card.locator(".product-overlay")
@@ -28,6 +29,9 @@ class ProductCard:
 
     def product_info(self) -> ProductInfo:
         return ProductInfo(title=self.title.inner_text(), price=self.price.inner_text())
+
+    def wait_for_image_to_load(self) -> None:
+        self.image.wait_for_function("(img) => img.complete && img.naturalHeight > 0")
 
     def add_to_cart(self) -> CartModal:
         self.card.hover()

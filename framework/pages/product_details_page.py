@@ -15,6 +15,10 @@ class ProductDetailsPage(BasePage):
         self.add_to_cart_button = self.product_details.get_by_role(
             "button", name="Add to cart"
         )
+        self.image = self.product_details.locator(".view-product img")
+
+    def wait_for_image_to_load(self) -> None:
+        self.image.wait_for_function("(img) => img.complete && img.naturalHeight > 0")
 
     def set_quantity(self, quantity: int) -> None:
         self.quantity_input.fill(str(quantity))
