@@ -4,11 +4,13 @@ version = "0.1.0"
 description = "A hands-on learning repository for Python-based SDET development"
 requires-python = ">=3.11"
 
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-python_files = ["test_*.py"]
-python_functions = ["test_*"]
-addopts = "-ra"
+dependencies = [
+    "playwright==1.62.0",
+    "pytest==9.1.1",
+    "pytest-playwright==0.9.0",
+    "python-dotenv==1.2.3",
+    "ruff==0.16.1",
+]
 
 [tool.ruff]
 line-length = 88
