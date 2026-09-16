@@ -8,7 +8,7 @@ from framework.utils.common import build_url
 
 # Test Case 9
 def test_search_products(home_page: HomePage) -> None:
-    products_page = home_page.go_to_products_page()
+    products_page = home_page.header.go_to_products_page()
 
     expect(products_page.page).to_have_url(build_url(BASE_URL, ProductsPage.PATH))
     expect(products_page.product_listing.title).to_be_visible()

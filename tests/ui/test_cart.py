@@ -9,7 +9,7 @@ from framework.utils.common import build_url
 
 # Test Case 12
 def test_add_two_products_to_cart(home_page: HomePage) -> None:
-    products_page = home_page.go_to_products_page()
+    products_page = home_page.header.go_to_products_page()
     first_product = products_page.product_listing.product_at(0)
     first_product_info = first_product.product_info()
     first_product.add_to_cart().continue_shopping()

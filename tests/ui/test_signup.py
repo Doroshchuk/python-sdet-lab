@@ -8,7 +8,7 @@ from framework.pages.home_page import HomePage
 
 # Test Case 1
 def test_register_successfully(home_page: HomePage) -> None:
-    signup_login_page = home_page.go_to_signup_login_page()
+    signup_login_page = home_page.header.go_to_signup_login_page()
 
     expect(signup_login_page.signup_form_title).to_be_visible()
 
@@ -25,12 +25,12 @@ def test_register_successfully(home_page: HomePage) -> None:
 
     account_created_page.proceed()
 
-    expect(home_page.logged_in_as_link).to_be_visible()
-    expect(home_page.logged_in_as_link).to_have_text(
+    expect(home_page.header.logged_in_as_link).to_be_visible()
+    expect(home_page.header.logged_in_as_link).to_have_text(
         f"Logged in as {user_registration_data.name}"
     )
 
-    account_deleted_page = home_page.delete_account()
+    account_deleted_page = home_page.header.delete_account()
 
     expect(account_deleted_page.title).to_be_visible()
 
