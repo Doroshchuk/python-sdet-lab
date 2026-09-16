@@ -19,6 +19,21 @@ def generate_random_email(length: int = 10, domain: str = "example.com") -> str:
     return f"{username}@{domain}"
 
 
+def generate_email(username: str, domain: str = "example.com") -> str:
+    """
+    Generate an email address based on a given username for testing purposes.
+
+    Args:
+        username: Username.
+        domain: Email domain without the '@' symbol.
+
+    Returns:
+        A generated email address.
+    """
+
+    return f"{username}@{domain}"
+
+
 def generate_random_string(length: int = 10, include_digits: bool = False) -> str:
     """
     Generate a random string for testing purposes.
