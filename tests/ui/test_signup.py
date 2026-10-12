@@ -4,12 +4,13 @@ from framework.factories.user_registration_data_factory import (
     UserRegistrationDataFactory,
 )
 from framework.pages.home_page import HomePage
+from framework.pages.signup_and_login_page import SignupAndLoginPage
 
 
 # Test Case 1
-def test_register_successfully(home_page: HomePage) -> None:
-    signup_login_page = home_page.header.go_to_signup_login_page()
-
+def test_register_successfully(
+    home_page: HomePage, signup_login_page: SignupAndLoginPage
+) -> None:
     expect(signup_login_page.signup_form_title).to_be_visible()
 
     user_registration_data = UserRegistrationDataFactory.create()

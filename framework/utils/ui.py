@@ -36,7 +36,7 @@ def get_validity_state(locator: Locator) -> ValidityState:
     return ValidityState(
         bad_input=validity["badInput"],
         custom_error=validity["customError"],
-        pattern_mismatch=validity["patternMissmatch"],
+        pattern_mismatch=validity["patternMismatch"],
         range_overflow=validity["rangeOverflow"],
         range_underflow=validity["rangeUnderflow"],
         step_mismatch=validity["stepMismatch"],
