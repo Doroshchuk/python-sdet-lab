@@ -19,5 +19,7 @@ def signup_login_page(home_page: HomePage) -> SignupAndLoginPage:
 
 
 @pytest.fixture
-def products_page(home_page: HomePage) -> ProductsPage:
-    return home_page.header.go_to_products_page()
+def products_page(page: Page) -> ProductsPage:
+    products_page = ProductsPage(page)
+    products_page.open()
+    return products_page

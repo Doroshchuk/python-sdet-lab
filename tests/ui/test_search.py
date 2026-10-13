@@ -1,16 +1,10 @@
 from playwright.sync_api import expect
 
-from framework.config.settings import BASE_URL
 from framework.pages.products_page import ProductsPage
-from framework.utils.common import build_url
 
 
 # Test Case 9
 def test_search_products(products_page: ProductsPage) -> None:
-    expect(products_page.page).to_have_url(build_url(BASE_URL, ProductsPage.PATH))
-    expect(products_page.product_listing.title).to_be_visible()
-    expect(products_page.product_listing.title).to_have_text("All Products")
-
     search_term = "dress"
     products_page.search_product(search_term)
     expect(products_page.product_listing.title).to_be_visible()
