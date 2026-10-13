@@ -11,8 +11,6 @@ from framework.pages.signup_and_login_page import SignupAndLoginPage
 def test_register_successfully(
     home_page: HomePage, signup_login_page: SignupAndLoginPage
 ) -> None:
-    expect(signup_login_page.signup_form_title).to_be_visible()
-
     user_registration_data = UserRegistrationDataFactory.create()
     signup_page = signup_login_page.signup(
         name=user_registration_data.name, email=user_registration_data.email

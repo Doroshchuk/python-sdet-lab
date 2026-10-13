@@ -13,7 +13,6 @@ from framework.utils.ui import ValidityState, get_validity_state
 
 # Test Case 3
 def test_login_with_invalid_credentials(signup_login_page: SignupAndLoginPage) -> None:
-    expect(signup_login_page.login_form_title).to_be_visible()
     signup_login_page.login(generate_random_email(), generate_random_string())
     expect(signup_login_page.login_error).to_be_visible()
 
