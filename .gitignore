@@ -225,4 +225,7 @@ __marimo__/
 # Trace results
 test-results/
 
+# Test reports
+reports/
+
 .env
