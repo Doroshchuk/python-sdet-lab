@@ -1,0 +1,16 @@
+name: Smoke Tests
+
+on: 
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  run-smoke-ui-tests:
+    uses: ./.github/workflows/reusable_tests.yml
+    with:
+      pytest_args: "-m smoke"

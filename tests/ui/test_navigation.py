@@ -1,3 +1,4 @@
+import pytest
 from playwright.sync_api import expect
 
 from framework.config.settings import BASE_URL
@@ -7,11 +8,13 @@ from framework.pages.signup_and_login_page import SignupAndLoginPage
 from framework.utils.common import build_url
 
 
+@pytest.mark.smoke
 def test_home_page_is_displayed(home_page: HomePage) -> None:
     expect(home_page.page).to_have_url(build_url(BASE_URL, HomePage.PATH))
     expect(home_page.slider).to_be_visible()
 
 
+@pytest.mark.smoke
 def test_navigate_to_signup_login_page(home_page: HomePage) -> None:
     signup_login_page = home_page.header.go_to_signup_login_page()
 

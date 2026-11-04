@@ -1,21 +1,24 @@
-name: run-tests
+name: Reusable Tests
 
 on: 
-  pull_request:
-    branches: [main]
-  push:
-    branches: [main]
-
-# Available globally to every job and step below
-env:
-  BASE_URL: 'https://automationexercise.com'
+  workflow_call:
+    inputs:
+      pytest_args:
+        description: "Additional pytest arguments"
+        required: false
+        type: string
+        default: ""
 
 permissions:
   contents: read
 
 jobs:
-  run-ui-tests:
+  run-tests:
     runs-on: ubuntu-latest
+
+    env:
+      BASE_URL: "https://automationexercise.com"
+
     steps:
       - name: Check out repository code
         uses: actions/checkout@v7
@@ -29,15 +32,16 @@ jobs:
       - name: Install project and dependencies
         run: |
           python -m pip install --upgrade pip
-          # Installs dependencies AND your current project in editable mode
           python -m pip install -e .
         
       - name: Install Chromium & OS Dependencies
         # Restricting it to 'chromium' keeps CI builds fast
         run: python -m playwright install --with-deps chromium
 
-      - name: Run Pytest Playwright Tests
-        run: python -m pytest
+      - name: Run Tests
+        env:
+          PYTEST_ARGS: ${{ inputs.pytest_args }}
+        run: python -m pytest $PYTEST_ARGS
 
       - name: Upload Playwright failure artifacts
         if: failure()
@@ -47,5 +51,3 @@ jobs:
           path: test-results/
           if-no-files-found: warn
           retention-days: 7
-
-      
