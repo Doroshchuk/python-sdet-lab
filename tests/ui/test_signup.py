@@ -1,3 +1,4 @@
+import pytest
 from playwright.sync_api import expect
 
 from framework.factories.user_registration_data_factory import (
@@ -8,6 +9,7 @@ from framework.pages.signup_and_login_page import SignupAndLoginPage
 
 
 # Test Case 1
+@pytest.mark.smoke
 def test_register_successfully(
     home_page: HomePage, signup_login_page: SignupAndLoginPage
 ) -> None:

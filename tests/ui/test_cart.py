@@ -1,5 +1,6 @@
 import re
 
+import pytest
 from playwright.sync_api import expect
 
 from framework.config.settings import BASE_URL
@@ -37,6 +38,7 @@ def test_add_two_products_to_cart(products_page: ProductsPage) -> None:
 
 
 # Test Case 13
+@pytest.mark.smoke
 def test_view_product_quantity_in_the_cart(home_page: HomePage) -> None:
     first_product = home_page.product_listing.product_at(0)
     first_product_info = first_product.product_info()

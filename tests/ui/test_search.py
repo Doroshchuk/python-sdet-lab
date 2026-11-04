@@ -1,9 +1,11 @@
+import pytest
 from playwright.sync_api import expect
 
 from framework.pages.products_page import ProductsPage
 
 
 # Test Case 9
+@pytest.mark.smoke
 def test_search_products(products_page: ProductsPage) -> None:
     search_term = "dress"
     products_page.search_product(search_term)
