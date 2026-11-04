@@ -1,0 +1,51 @@
+name: run-tests
+
+on: 
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# Available globally to every job and step below
+env:
+  BASE_URL: 'https://automationexercise.com'
+
+permissions:
+  contents: read
+
+jobs:
+  run-ui-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+          cache: 'pip' # Automatically caches based on pyproject.toml
+
+      - name: Install project and dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # Installs dependencies AND your current project in editable mode
+          python -m pip install -e .
+        
+      - name: Install Chromium & OS Dependencies
+        # Restricting it to 'chromium' keeps CI builds fast
+        run: python -m playwright install --with-deps chromium
+
+      - name: Run Pytest Playwright Tests
+        run: python -m pytest
+
+      - name: Upload Playwright failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-failure-artifacts
+          path: test-results/
+          if-no-files-found: warn
+          retention-days: 7
+
+      
