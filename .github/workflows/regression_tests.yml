@@ -1,0 +1,13 @@
+name: Regression Tests
+
+on: 
+  schedule:
+    - cron: "0 8 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  run-regression-ui-tests:
+    uses: ./.github/workflows/reusable_tests.yml
