@@ -39,4 +39,13 @@ jobs:
       - name: Run Pytest Playwright Tests
         run: python -m pytest
 
+      - name: Upload Playwright failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-failure-artifacts
+          path: test-results/
+          if-no-files-found: warn
+          retention-days: 7
+
       
