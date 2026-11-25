@@ -2,7 +2,7 @@ import pytest
 from playwright.sync_api import APIRequestContext, Playwright
 
 from framework.api.clients.user_client import UserApiClient
-from framework.api.models.responses import BaseResponse, UserAccountResponse
+from framework.api.models.responses import BaseResponse
 from framework.config.settings import BASE_URL
 
 
@@ -24,22 +24,20 @@ def register_user_cleanup(
 ):
     def register(email: str, password: str):
         def cleanup():
-            account_response = user_api_client.get_account(email)
-            assert account_response.ok
-            account_response_data = BaseResponse.model_validate(account_response.json())
-            if account_response_data.response_code == 404:
+            get_response = user_api_client.get_account(email)
+            assert get_response.ok, get_response.text()
+            get_result = BaseResponse.model_validate(get_response.json())
+            if get_result.response_code == 404:
                 return
 
-            assert account_response_data.response_code == 200, (
-                f"Unexpected response during account lookup: "
-                f"{account_response.text()}"
+            assert get_result.response_code == 200, (
+                f"Unexpected response during account lookup: {get_response.text()}"
             )
             delete_response = user_api_client.delete_account(email, password)
-            assert delete_response.ok
-            delete_response_data = BaseResponse.model_validate(delete_response.json())
-            assert delete_response_data.response_code == 200, (
-                f"Account cleanup failed for {email}: "
-                f"{delete_response.text()}"
+            assert delete_response.ok, delete_response.text()
+            delete_result = BaseResponse.model_validate(delete_response.json())
+            assert delete_result.response_code == 200, (
+                f"Account cleanup failed for {email}: {delete_response.text()}"
             )
 
         request.addfinalizer(cleanup)

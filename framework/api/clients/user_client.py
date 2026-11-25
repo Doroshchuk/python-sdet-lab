@@ -1,4 +1,5 @@
 from dataclasses import asdict
+
 from playwright.sync_api import APIRequestContext, APIResponse
 
 from framework.api.models.user import UserPayload
@@ -26,4 +27,3 @@ class UserApiClient:
         return self.api_request_context.delete(
             url=self.DELETE_ACCOUNT_PATH, form={"email": email, "password": password}
         )
-        

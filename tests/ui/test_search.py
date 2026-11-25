@@ -15,7 +15,8 @@ def test_search_products(products_page: ProductsPage) -> None:
     for product_card in products_page.product_listing.product_cards.all():
         expect(product_card).to_be_visible()
 
-    # TODO: Validate search result relevance once the expected search behavior is defined.
+    # TODO:
+    # Validate search result relevance once the expected search behavior is defined.
     # Searching for "dress" currently returns products whose titles do not contain
     # "dress" (e.g. "Sleeveless Unicorn Patch Gown - Pink"), so title matching
     # cannot reliably determine whether all returned products are relevant.

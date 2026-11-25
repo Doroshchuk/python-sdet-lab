@@ -1,9 +1,11 @@
+from framework.api.models.responses import UserDetails
 from framework.api.models.user import UserPayload
 from framework.models.user_registration_data import UserRegistrationData
-from framework.api.models.responses import UserDetails
 
 
-def map_user_registration_data_to_payload(user_registration_data: UserRegistrationData) -> UserPayload:
+def map_user_registration_data_to_payload(
+    user_registration_data: UserRegistrationData,
+) -> UserPayload:
     return UserPayload(
         name=user_registration_data.name,
         email=user_registration_data.email,
@@ -14,7 +16,7 @@ def map_user_registration_data_to_payload(user_registration_data: UserRegistrati
         birth_year=user_registration_data.date_of_birth.year,
         firstname=user_registration_data.first_name,
         lastname=user_registration_data.last_name,
-        company= user_registration_data.company,
+        company=user_registration_data.company,
         address1=user_registration_data.address,
         address2=user_registration_data.address2,
         country=str(user_registration_data.country.value),
@@ -25,7 +27,9 @@ def map_user_registration_data_to_payload(user_registration_data: UserRegistrati
     )
 
 
-def map_user_registration_data_to_user_details(user_registration_data: UserRegistrationData) -> UserDetails:
+def map_user_registration_data_to_user_details(
+    user_registration_data: UserRegistrationData,
+) -> UserDetails:
     return UserDetails(
         name=user_registration_data.name,
         email=user_registration_data.email,
@@ -35,7 +39,7 @@ def map_user_registration_data_to_user_details(user_registration_data: UserRegis
         birth_year=str(user_registration_data.date_of_birth.year),
         first_name=user_registration_data.first_name,
         last_name=user_registration_data.last_name,
-        company= user_registration_data.company,
+        company=user_registration_data.company,
         address1=user_registration_data.address,
         address2=user_registration_data.address2,
         country=str(user_registration_data.country.value),

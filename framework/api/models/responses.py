@@ -1,5 +1,6 @@
 from pydantic import BaseModel, ConfigDict, Field
 
+
 class BaseApiModel(BaseModel):
     model_config = ConfigDict(strict=True, extra="ignore")
 
@@ -31,8 +32,8 @@ class UserDetails(BaseApiModel):
 
 
 class UserResponse(UserDetails):
-    id: int
-    
+    id: int = Field(gt=0)
+
 
 class UserAccountResponse(BaseResponse):
     user: UserResponse
