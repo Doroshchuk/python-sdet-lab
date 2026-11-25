@@ -1,4 +1,5 @@
 from collections.abc import Callable
+
 from framework.api.clients.user_client import UserApiClient
 from framework.api.mappers.user_mapper import (
     map_user_registration_data_to_payload,
