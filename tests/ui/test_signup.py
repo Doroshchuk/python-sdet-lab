@@ -1,9 +1,9 @@
+from collections.abc import Callable
+
 import pytest
 from playwright.sync_api import expect
 
-from framework.factories.user_registration_data_factory import (
-    UserRegistrationDataFactory,
-)
+from framework.models.user_registration_data import UserRegistrationData
 from framework.pages.home_page import HomePage
 from framework.pages.signup_and_login_page import SignupAndLoginPage
 
@@ -11,9 +11,12 @@ from framework.pages.signup_and_login_page import SignupAndLoginPage
 # Test Case 1
 @pytest.mark.smoke
 def test_register_successfully(
-    home_page: HomePage, signup_login_page: SignupAndLoginPage
+    home_page: HomePage,
+    signup_login_page: SignupAndLoginPage,
+    user_registration_data: UserRegistrationData,
+    register_user_cleanup: Callable[[str, str], None],
 ) -> None:
-    user_registration_data = UserRegistrationDataFactory.create()
+    register_user_cleanup(user_registration_data.email, user_registration_data.password)
     signup_page = signup_login_page.signup(
         name=user_registration_data.name, email=user_registration_data.email
     )
@@ -30,9 +33,3 @@ def test_register_successfully(
     expect(home_page.header.logged_in_as_link).to_have_text(
         f"Logged in as {user_registration_data.name}"
     )
-
-    account_deleted_page = home_page.header.delete_account()
-
-    expect(account_deleted_page.title).to_be_visible()
-
-    account_deleted_page.continue_to_home_page()

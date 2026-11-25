@@ -1,5 +1,4 @@
-import pytest
-
+from collections.abc import Callable
 from framework.api.clients.user_client import UserApiClient
 from framework.api.mappers.user_mapper import (
     map_user_registration_data_to_payload,
@@ -10,23 +9,14 @@ from framework.api.models.responses import (
     UserAccountResponse,
     UserDetails,
 )
-from framework.factories.user_registration_data_factory import (
-    UserRegistrationDataFactory,
-)
 from framework.models.user_registration_data import UserRegistrationData
-
-
-@pytest.fixture
-def user_registration_data() -> UserRegistrationData:
-    user_registration_data = UserRegistrationDataFactory.create()
-    return user_registration_data
 
 
 # API Test Case 11
 def test_user_account_creation(
     user_registration_data: UserRegistrationData,
     user_api_client: UserApiClient,
-    register_user_cleanup,
+    register_user_cleanup: Callable[[str, str], None],
 ):
     user_payload = map_user_registration_data_to_payload(user_registration_data)
     expected_user = map_user_registration_data_to_user_details(user_registration_data)
