@@ -1,5 +1,3 @@
-from collections.abc import Callable
-
 import pytest
 from playwright.sync_api import APIRequestContext, Playwright
 
@@ -7,10 +5,9 @@ from framework.api.clients.user_client import UserApiClient
 from framework.api.mappers.user_mapper import map_user_registration_data_to_payload
 from framework.api.models.responses import BaseResponse, MessageResponse
 from framework.config.settings import BASE_URL
-from framework.factories.user_registration_data_factory import (
-    UserRegistrationDataFactory,
-)
+from framework.factories.user_registration_data_factory import UserRegistrationDataFactory
 from framework.models.user_registration_data import UserRegistrationData
+from collections.abc import Callable
 
 
 @pytest.fixture
@@ -32,9 +29,9 @@ def user_registration_data() -> UserRegistrationData:
 
 @pytest.fixture
 def registered_user(
-    user_api_client: UserApiClient,
+    user_api_client: UserApiClient, 
     user_registration_data: UserRegistrationData,
-    register_user_cleanup,
+    register_user_cleanup: Callable[[str, str], None]
 ) -> UserRegistrationData:
     user_payload = map_user_registration_data_to_payload(user_registration_data)
     register_user_cleanup(user_payload.email, user_payload.password)
@@ -48,7 +45,7 @@ def registered_user(
 @pytest.fixture
 def register_user_cleanup(
     request: pytest.FixtureRequest, user_api_client: UserApiClient
-) -> Callable[[str, str], None]:
+) -> Callable[[str,str], None]:
     def register(email: str, password: str) -> None:
         def cleanup() -> None:
             get_response = user_api_client.get_account(email)
