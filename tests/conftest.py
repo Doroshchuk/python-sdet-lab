@@ -2,6 +2,7 @@ import pytest
 from playwright.sync_api import APIRequestContext, Playwright
 
 from framework.api.clients.user_client import UserApiClient
+from framework.api.models.responses import BaseResponse, UserAccountResponse
 from framework.config.settings import BASE_URL
 
 
@@ -25,17 +26,18 @@ def register_user_cleanup(
         def cleanup():
             account_response = user_api_client.get_account(email)
             assert account_response.ok
-            account_response_code = account_response.json()["responseCode"]
-            if account_response_code == 404:
+            account_response_data = BaseResponse.model_validate(account_response.json())
+            if account_response_data.response_code == 404:
                 return
 
-            assert account_response_code == 200, (
+            assert account_response_data.response_code == 200, (
                 f"Unexpected response during account lookup: "
                 f"{account_response.text()}"
             )
             delete_response = user_api_client.delete_account(email, password)
             assert delete_response.ok
-            assert delete_response.json()["responseCode"] == 200, (
+            delete_response_data = BaseResponse.model_validate(delete_response.json())
+            assert delete_response_data.response_code == 200, (
                 f"Account cleanup failed for {email}: "
                 f"{delete_response.text()}"
             )

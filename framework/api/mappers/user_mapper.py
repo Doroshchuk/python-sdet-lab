@@ -1,5 +1,6 @@
-from framework.api.models.user import UserDetails, UserPayload
+from framework.api.models.user import UserPayload
 from framework.models.user_registration_data import UserRegistrationData
+from framework.api.models.responses import UserDetails
 
 
 def map_user_registration_data_to_payload(user_registration_data: UserRegistrationData) -> UserPayload:

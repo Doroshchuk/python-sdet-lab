@@ -1,4 +1,4 @@
-from dataclasses import dataclass, fields
+from dataclasses import dataclass
 
 @dataclass
 class UserPayload:
@@ -19,36 +19,3 @@ class UserPayload:
     state: str
     city: str
     mobile_number: str
-
-
-@dataclass
-class UserDetails:
-    name: str
-    email: str
-    title: str
-    birth_day: str
-    birth_month: str
-    birth_year: str
-    first_name: str
-    last_name: str
-    company: str
-    address1: str
-    address2: str
-    country: str
-    state: str
-    city: str
-    zipcode: str
-
-    @classmethod
-    def from_user_response(cls, user_response: "UserResponse") -> "UserDetails":
-        return cls(
-            **{
-                field.name: getattr(user_response, field.name)
-                for field in fields(cls)
-            }
-        )
-
-
-@dataclass
-class UserResponse(UserDetails):
-    id: int
