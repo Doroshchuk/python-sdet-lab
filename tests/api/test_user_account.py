@@ -1,5 +1,7 @@
 from collections.abc import Callable
 
+import pytest
+
 from framework.api.clients.user_client import UserApiClient
 from framework.api.mappers.user_mapper import (
     map_user_registration_data_to_payload,
@@ -13,7 +15,7 @@ from framework.api.models.responses import (
 from framework.models.user_registration_data import UserRegistrationData
 
 
-# API Test Case 11
+@pytest.mark.smoke
 def test_user_account_creation(
     user_registration_data: UserRegistrationData,
     user_api_client: UserApiClient,
