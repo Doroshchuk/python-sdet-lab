@@ -27,6 +27,12 @@ def test_user_account_creation(
 
     create_response = user_api_client.create_account(user_payload)
     assert create_response.ok, create_response.text()
+
+    print(f"URL: {create_response.url}")
+    print(f"HTTP status: {create_response.status}")
+    print(f"Content-Type: {create_response.headers.get('content-type')}")
+    print(f"Response length: {len(create_response.body())}")
+    
     create_result = MessageResponse.model_validate(create_response.json())
 
     assert create_result.response_code == 201
