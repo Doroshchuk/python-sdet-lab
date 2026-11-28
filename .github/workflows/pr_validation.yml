@@ -1,0 +1,25 @@
+name: PR Validation
+
+on: 
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  run-api-tests:
+    uses: ./.github/workflows/reusable_tests.yml
+    with:
+      pytest_args: "tests/api"
+      artifact_name: "api-validation"
+
+  run-ui-smoke-tests:
+    uses: ./.github/workflows/reusable_tests.yml
+    with:
+      pytest_args: "tests/ui -m smoke"
+      install_browser: true
+      artifact_name: "ui-smoke"

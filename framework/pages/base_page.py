@@ -11,4 +11,14 @@ class BasePage:
         self.header = Header(self.page)
 
     def open(self, path: str = "") -> None:
-        self.page.goto(build_url(BASE_URL, path))
+        url = build_url(BASE_URL, path)
+        response = self.page.goto(url)
+
+        assert response is not None, (
+            f"No navigation response received for {url}"
+        )
+
+        assert response.ok, (
+            f"Navigation failed: {url}. "
+            f"HTTP {response.status} {response.status_text}"
+        )

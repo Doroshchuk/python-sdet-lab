@@ -4,10 +4,20 @@ on:
   workflow_call:
     inputs:
       pytest_args:
-        description: "Additional pytest arguments"
-        required: false
+        description: "Determines which tests to execute"
+        required: true
         type: string
-        default: ""
+
+      install_browser:
+        description: "Controls Chromium installation"
+        type: boolean
+        default: false
+        required: false
+
+      artifact_name:
+        description: "Prevents artifact naming conflicts"
+        type: string
+        required: true
 
 permissions:
   contents: read
@@ -26,8 +36,9 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
-          python-version: '3.13'
+          python-version: '3.14'
           cache: 'pip' # Automatically caches based on pyproject.toml
+          cache-dependency-path: pyproject.toml
 
       - name: Install project and dependencies
         run: |
@@ -35,19 +46,29 @@ jobs:
           python -m pip install -e .
         
       - name: Install Chromium & OS Dependencies
+        if: ${{ inputs.install_browser }}
         # Restricting it to 'chromium' keeps CI builds fast
         run: python -m playwright install --with-deps chromium
 
       - name: Run Tests
         env:
           PYTEST_ARGS: ${{ inputs.pytest_args }}
-        run: python -m pytest $PYTEST_ARGS
+        run: python -m pytest $PYTEST_ARGS --junitxml=reports/junit/results.xml
 
-      - name: Upload Playwright failure artifacts
-        if: failure()
+      - name: Upload JUnit test report
+        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-failure-artifacts
+          name: ${{ inputs.artifact_name }}-junit
+          path: reports/junit/results.xml
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Upload Playwright failure artifacts
+        if: ${{ failure() && inputs.install_browser }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact_name }}-playwright
           path: test-results/
           if-no-files-found: warn
           retention-days: 7

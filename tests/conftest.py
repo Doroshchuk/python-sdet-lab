@@ -1,52 +1,72 @@
-import re
-from pathlib import Path
+from collections.abc import Callable
 
-import allure
 import pytest
-from playwright.sync_api import Page, Playwright
-from pytest import TestReport
+from playwright.sync_api import APIRequestContext, Playwright
+
+from framework.api.clients.user_client import UserApiClient
+from framework.api.mappers.user_mapper import map_user_registration_data_to_payload
+from framework.api.models.responses import BaseResponse, MessageResponse
+from framework.config.settings import BASE_URL
+from framework.factories.user_registration_data_factory import (
+    UserRegistrationDataFactory,
+)
+from framework.models.user_registration_data import UserRegistrationData
 
 
-@pytest.fixture(scope="session", autouse=True)
-def configure_playwright(playwright: Playwright) -> None:
-    playwright.selectors.set_test_id_attribute("data-qa")
+@pytest.fixture
+def api_request_context(playwright: Playwright) -> APIRequestContext:
+    context = playwright.request.new_context(base_url=BASE_URL)
+    yield context
+    context.dispose()
 
 
-@pytest.fixture(autouse=True)
-def block_ad_request(page: Page) -> None:
-    """Block third-party ad requests that may cause flaky UI tests."""
-    page.route("**/*doubleclick.net/**", lambda route: route.abort())
+@pytest.fixture
+def user_api_client(api_request_context: APIRequestContext) -> UserApiClient:
+    return UserApiClient(api_request_context)
 
 
-@pytest.hookimpl(hookwrapper=True)
-def pytest_runtest_makereport(item, call) -> None:
-    outcome = yield
-    report: TestReport = outcome.get_result()
-    setattr(item, f"rep_{report.when}", report)
+@pytest.fixture
+def user_registration_data() -> UserRegistrationData:
+    return UserRegistrationDataFactory.create()
 
 
-# A regular expression to match the file names of the screenshots taken on test failures
-SCREENSHOT_NAME_PATTERN = re.compile(r"^test-failed-\d+\.png$")
+@pytest.fixture
+def registered_user(
+    user_api_client: UserApiClient,
+    user_registration_data: UserRegistrationData,
+    register_user_cleanup: Callable[[str, str], None],
+) -> UserRegistrationData:
+    user_payload = map_user_registration_data_to_payload(user_registration_data)
+    register_user_cleanup(user_payload.email, user_payload.password)
+    create_response = user_api_client.create_account(user_payload)
+    assert create_response.ok, create_response.text()
+    create_result = MessageResponse.model_validate(create_response.json())
+    assert create_result.response_code == 201
+    return user_registration_data
 
 
-@pytest.hookimpl(hookwrapper=True)
-def pytest_runtest_teardown(item, nextitem):
-    yield
+@pytest.fixture
+def register_user_cleanup(
+    request: pytest.FixtureRequest, user_api_client: UserApiClient
+) -> Callable[[str, str], None]:
+    def register(email: str, password: str) -> None:
+        def cleanup() -> None:
+            get_response = user_api_client.get_account(email)
+            assert get_response.ok, get_response.text()
+            get_result = BaseResponse.model_validate(get_response.json())
+            if get_result.response_code == 404:
+                return
 
-    report: TestReport | None = getattr(item, "rep_call", None)
-
-    if report is None or not report.failed:
-        return
-
-    artifacts_dir = item.funcargs.get("output_path")
-    if not artifacts_dir:
-        return
-
-    artifacts_dir_path = Path(artifacts_dir)
-    for file in artifacts_dir_path.iterdir():
-        if file.is_file() and SCREENSHOT_NAME_PATTERN.match(file.name):
-            allure.attach.file(
-                str(file),
-                name="Failure screenshot",
-                attachment_type=allure.attachment_type.PNG,
+            assert get_result.response_code == 200, (
+                f"Unexpected response during account lookup: {get_response.text()}"
             )
+            delete_response = user_api_client.delete_account(email, password)
+            assert delete_response.ok, delete_response.text()
+            delete_result = BaseResponse.model_validate(delete_response.json())
+            assert delete_result.response_code == 200, (
+                f"Account cleanup failed for {email}: {delete_response.text()}"
+            )
+
+        request.addfinalizer(cleanup)
+
+    return register

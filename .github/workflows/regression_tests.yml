@@ -9,5 +9,15 @@ permissions:
   contents: read
 
 jobs:
-  run-regression-ui-tests:
+  run-api-regression-tests:
     uses: ./.github/workflows/reusable_tests.yml
+    with:
+      pytest_args: "tests/api"
+      artifact_name: "api-regression"
+
+  run-ui-regression-tests:
+    uses: ./.github/workflows/reusable_tests.yml
+    with:
+      pytest_args: "tests/ui"
+      install_browser: true
+      artifact_name: "ui-regression"
